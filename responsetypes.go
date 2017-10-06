@@ -1,7 +1,7 @@
 // Declaration of response types from Daum search REST API.
 // Refer to the following URL for a full list of types and examples.
 // https://developers.kakao.com/docs/restapi/search
-package daumcrawler
+package daumapi
 
 // All "Response" structs are composed of Meta and Documents where
 // only Documents differ in types. Meta is used on all "Response" types.

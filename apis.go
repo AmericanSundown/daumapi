@@ -1,7 +1,7 @@
-// Package daumcrawler implements API functions for Daum search service.
+// Package daumapi implements API functions for Daum search service.
 // The package basically wraps REST API from Daum search service.
 // For the service details, refer to https://developers.kakao.com/docs/restapi/search
-package daumcrawler
+package daumapi
 
 import (
 	"encoding/json"

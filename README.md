@@ -1,11 +1,11 @@
-# daumcrawler
+# daumapi
 
-A crawler for Daum "Search" REST API.
+A simple wrapper around Daum "Search" REST API.
 
 
 ## Installation
 ```bash
-go get -u github.com/hyunchel/daumcrawler
+go get -u github.com/hyunchel/daumapi
 ```
 
 ## Usage
@@ -13,18 +13,19 @@ go get -u github.com/hyunchel/daumcrawler
 import (
     "fmt"
 
-    "github.com/hyunchel/daumcrawler"
+    "github.com/hyunchel/daumapi"
 )
 
+const API_KEY = "some api key from Kakao"
 keyword := "볼빨간사춘기"
 
-fmt.Println(daumcrawler.Web(keyword))
-fmt.Println(daumcrawler.Vclip(keyword))
-fmt.Println(daumcrawler.Image(keyword))
-fmt.Println(daumcrawler.Blog(keyword))
-fmt.Println(daumcrawler.Tip(keyword))
-fmt.Println(daumcrawler.Book(keyword))
-fmt.Println(daumcrawler.Cafe(keyword))
+fmt.Println(daumapi.Web(API_KEY, keyword))
+fmt.Println(daumapi.Vclip(API_KEY, keyword))
+fmt.Println(daumapi.Image(API_KEY, keyword))
+fmt.Println(daumapi.Blog(API_KEY, keyword))
+fmt.Println(daumapi.Tip(API_KEY, keyword))
+fmt.Println(daumapi.Book(API_KEY, keyword))
+fmt.Println(daumapi.Cafe(API_KEY, keyword))
 ```
 
 ## Reference
