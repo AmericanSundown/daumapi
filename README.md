@@ -17,15 +17,22 @@ import (
 )
 
 const API_KEY = "some api key from Kakao"
+
 keyword := "볼빨간사춘기"
 
-fmt.Println(daumapi.Web(API_KEY, keyword))
-fmt.Println(daumapi.Vclip(API_KEY, keyword))
-fmt.Println(daumapi.Image(API_KEY, keyword))
-fmt.Println(daumapi.Blog(API_KEY, keyword))
-fmt.Println(daumapi.Tip(API_KEY, keyword))
-fmt.Println(daumapi.Book(API_KEY, keyword))
-fmt.Println(daumapi.Cafe(API_KEY, keyword))
+daumapi.Web(API_KEY, keyword)
+daumapi.Vclip(API_KEY, keyword)
+daumapi.Image(API_KEY, keyword)
+daumapi.Blog(API_KEY, keyword)
+daumapi.Tip(API_KEY, keyword)
+daumapi.Book(API_KEY, keyword)
+daumapi.Cafe(API_KEY, keyword)
+```
+
+For the logs, use `PrintLog` function.
+```go
+// Runs daumapi.Cafe and print all captured logs.
+fmt.Println(daumapi.PrintLog(daumapi.Cafe, API_KEY, keyword))
 ```
 
 ## Reference

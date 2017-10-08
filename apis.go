@@ -4,6 +4,7 @@
 package daumapi
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,7 +12,14 @@ import (
 	"net/http"
 )
 
+type serviceFn func(string, string) string
+
 const KAKAO_REST_API_URL = "https://dapi.kakao.com/v2/search"
+
+var (
+	buf bytes.Buffer
+	logger = log.New(&buf, "INFO: ", log.Lshortfile)
+)
 
 // Perform a GET request with a custom header. The response
 // is read into []byte and returned. If any error occurs, the
@@ -19,19 +27,19 @@ const KAKAO_REST_API_URL = "https://dapi.kakao.com/v2/search"
 func getResult(appkey string, url string) []byte {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	req.Header.Add("Authorization", appkey)
-	log.Printf("Header: %v", req.Header)
+	logger.Printf("Header: %v", req.Header)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}	
-	log.Printf("resp.Body: %s", body)
+	logger.Printf("resp.Body: %s", body)
 	return body
 }
 
@@ -42,7 +50,7 @@ func getResult(appkey string, url string) []byte {
 func decodeJSON(responseType interface{}, contents []byte) interface{} {
 	err := json.Unmarshal(contents, &responseType)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 	return responseType
 }
@@ -52,7 +60,7 @@ func decodeJSON(responseType interface{}, contents []byte) interface{} {
 func encodeJSON(responseType interface{}) []byte {
 	b, err := json.Marshal(responseType)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 	return b
 }
@@ -60,15 +68,13 @@ func encodeJSON(responseType interface{}) []byte {
 // Create a complete URL with corresponding service name and provided keyword.
 func composeURL(service string, keyword string) string {
 	url := fmt.Sprintf("%s/%s?query=%s", KAKAO_REST_API_URL, service, keyword)
-	log.Printf("Composed URL: %s", url)
+	logger.Printf("Composed URL: %s", url)
 	return url
 }
 
-// FIXME: ENCODINGS on keyword?
-
 func Web(appkey string, keyword string) string {
 	service := "web"
-	log.Printf("Running %v function.", service)
+	logger.Printf("Running %v function.", service)
 	url := composeURL(service, keyword)
 	rawResp := getResult(appkey, url)
 	decodedResp := decodeJSON(WebResponse{}, rawResp)
@@ -78,7 +84,7 @@ func Web(appkey string, keyword string) string {
 
 func Vclip(appkey string, keyword string) string {
 	service := "vclip"
-	log.Printf("Running %v function.", service)
+	logger.Printf("Running %v function.", service)
 	url := composeURL(service, keyword)
 	rawResp := getResult(appkey, url)
 	decodedResp := decodeJSON(VclipResponse{}, rawResp)
@@ -88,7 +94,7 @@ func Vclip(appkey string, keyword string) string {
 
 func Image(appkey string, keyword string) string {
 	service := "image"
-	log.Printf("Running %v function.", service)
+	logger.Printf("Running %v function.", service)
 	url := composeURL(service, keyword)
 	rawResp := getResult(appkey, url)
 	decodedResp := decodeJSON(ImageResponse{}, rawResp)
@@ -98,7 +104,7 @@ func Image(appkey string, keyword string) string {
 
 func Blog(appkey string, keyword string) string {
 	service := "blog"
-	log.Printf("Running %v function.", service)
+	logger.Printf("Running %v function.", service)
 	url := composeURL(service, keyword)
 	rawResp := getResult(appkey, url)
 	decodedResp := decodeJSON(BlogResponse{}, rawResp)
@@ -108,7 +114,7 @@ func Blog(appkey string, keyword string) string {
 
 func Tip(appkey string, keyword string) string {
 	service := "tip"
-	log.Printf("Running %v function.", service)
+	logger.Printf("Running %v function.", service)
 	url := composeURL(service, keyword)
 	rawResp := getResult(appkey, url)
 	decodedResp := decodeJSON(TipResponse{}, rawResp)
@@ -118,7 +124,7 @@ func Tip(appkey string, keyword string) string {
 
 func Book(appkey string, keyword string) string {
 	service := "book"
-	log.Printf("Running %v function.", service)
+	logger.Printf("Running %v function.", service)
 	url := composeURL(service, keyword)
 	rawResp := getResult(appkey, url)
 	decodedResp := decodeJSON(BookResponse{}, rawResp)
@@ -128,10 +134,18 @@ func Book(appkey string, keyword string) string {
 
 func Cafe(appkey string, keyword string) string {
 	service := "cafe"
-	log.Printf("Running %v function.", service)
+	logger.Printf("Running %v function.", service)
 	url := composeURL(service, keyword)
 	rawResp := getResult(appkey, url)
 	decodedResp := decodeJSON(CafeResponse{}, rawResp)
 	encodedResp := encodeJSON(decodedResp)
 	return fmt.Sprintf("%s", encodedResp)
+}
+
+// Run the given function with all the logs printed.
+func PrintLog(fn serviceFn, appkey string, keyword string) string {
+	logger.Println("Running PrintLog function")
+	result := fn(appkey, keyword)
+	fmt.Print(&buf)
+	return result
 }
